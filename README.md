@@ -2,6 +2,7 @@
 
 1. CORS Fehler:
 
+```
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(MyAllowSpecificOrigins,
@@ -12,6 +13,7 @@ builder.Services.AddCors(options =>
             .AllowCredentials()
             .AllowAnyMethod());
 });
+```
 
 Sobald .AllowCredentials() aktiviere, darf nicht mehr .AllowAnyOrigin() verwendet werden.
 
@@ -26,6 +28,7 @@ Frage: Wie aktiviere ich CORS richtig?
 
 Ich will ja gar nicht .AllowAnyOrigin() aktivieren, aber jetzt tu ich's mal:
 
+```
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(MyAllowSpecificOrigins,
@@ -36,6 +39,7 @@ builder.Services.AddCors(options =>
             //.AllowCredentials()
             .AllowAnyMethod());
 });
+```
 
 Jetzt kann ich ohne [Authorize] markierte Methoden erfolgreich aufrufen.
 Auszug aus der Nework-Tab von Chrome:
@@ -67,6 +71,7 @@ strict-origin-when-cross-origin
 Das ist ja gar nict so schlecht, die 401 ist erkannt.
 Aber ich bekomme die 401 nicht in die Angular app:
 
+```
 Access to XMLHttpRequest at 'https://localhost:7267/api/weatherforecast/ping3' from origin 'http://localhost:4200' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
 
 UserService.ping3: Error detected: Message Http failure response for https://localhost:7267/api/weatherforecast/ping3: 0 Unknown Error
@@ -77,6 +82,7 @@ web.service.ts:75 UserService.ping3: Error detected: Name HttpErrorResponse
 web.service.ts:76 UserService.ping3: Error detected: Type undefined
 web.service.ts:77 UserService.ping3: Error detected: Headers [object Object]
 web.service.ts:78 UserService.ping3: Error detected: Ok false
+```
 
 Nur noch Status 0 statt der 401!
 Die 401 habe ich hier nicht mehr wegen des CORS Fehler, denke ich.
@@ -102,6 +108,7 @@ Trotzdem Frage: Warum 204 und 200?
 
 Nun die geschützte Methode:
 
+```
 Request URL:
 https://localhost:7267/api/weatherforecast/ping3
 Request Method:
@@ -110,10 +117,13 @@ Status Code:
 401 Unauthorized
 Referrer Policy:
 strict-origin-when-cross-origin
+```
 
 Und auch hier wieder die CORS Meesage:
 
+```
 Access to XMLHttpRequest at 'https://localhost:7267/api/weatherforecast/ping3' from origin 'http://localhost:4200' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+```
 
 Frage: 
 - Wie bekomme es hin, dass die geschützten Methoden aufrufbar werden (wie im SwaggerUI)?
