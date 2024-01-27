@@ -107,6 +107,8 @@ Schaut also gar nicht so schlecht aus.
 Trotzdem Frage: Warum 204 und 200?
 
 Nun die geschützte Methode:
+Obwohl login scheinbar geklappt hat, kann ich trotzdem keine geschützten Methoden aufrufen
+(oder aufrufen schon, aber nicht efolgreich):
 
 ```
 Request URL:
