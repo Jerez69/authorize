@@ -98,7 +98,8 @@ Frage: Wie bekomme ich den 401 Fehler korrekt in die Angular App?
 
 Das gleiche aber über meine Bespiel-Angular App:
 
-(Register hat geklappt, der Account ist erfolgreich in meiner CosmosDB gespeichert)
+(Register hat geklappt, der Account ist erfolgreich in meiner CosmosDB gespeichert,
+hier im Beispiel ist nur die InMmemoryDB konfiguriert).
 
 Login liefert zwei Einträge in der Network Tab:
 - 204
