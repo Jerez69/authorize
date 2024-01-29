@@ -17,9 +17,10 @@ builder.Services.AddCors(options =>
     options.AddPolicy(MyAllowSpecificOrigins,
         builder => builder
             //.WithOrigins("http://localhost:5216", "https://localhost:4200/", "http://localhost:4200/", "https://localhost:7267/", "https://localhost:7267/api/WeatherForecast/ping1")
-            .AllowAnyOrigin()
+            //.AllowAnyOrigin()
+            .SetIsOriginAllowed(origin => true) // allow any origin
             .AllowAnyHeader()
-            //.AllowCredentials()
+            .AllowCredentials()
             .AllowAnyMethod());
 });
 
@@ -33,14 +34,15 @@ builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
             return Task.CompletedTask;
         }
     });
+
 builder.Services.AddAuthorizationBuilder();
 
 // Add services to the container.
 builder.Services.AddDbContext<ApplicationDBContext>(
-    //options => options.UseCosmos(
-    //    builder.Configuration.GetSection("CosmosDb").GetValue<string>("Account"),
-    //    builder.Configuration.GetSection("CosmosDb").GetValue<string>("Key"),
-    //    builder.Configuration.GetSection("CosmosDb").GetValue<string>("DatabaseName")));
+//    options => options.UseCosmos(
+//        builder.Configuration.GetSection("CosmosDb").GetValue<string>("Account"),
+//        builder.Configuration.GetSection("CosmosDb").GetValue<string>("Key"),
+//        builder.Configuration.GetSection("CosmosDb").GetValue<string>("DatabaseName")));
     options => options.UseInMemoryDatabase("AppDb"));
 
 builder.Services.AddIdentityCore<MyUser>()
@@ -63,8 +65,11 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 app.MapIdentityApi<MyUser>();
+
 app.UseDefaultFiles();
 app.UseStaticFiles();
+
+app.UseCors(MyAllowSpecificOrigins);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -73,9 +78,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors(MyAllowSpecificOrigins);
-
 app.UseHttpsRedirection();
+
+app.UseCookiePolicy(
+    new CookiePolicyOptions
+    {
+        MinimumSameSitePolicy = SameSiteMode.None
+    });
+
+app.UseAuthentication();
+
+app.UseAuthorization();
 
 // protection from cross-site request forgery (CSRF/XSRF) attacks with empty body
 // form can't post anything useful so the body is null, the JSON call can pass
