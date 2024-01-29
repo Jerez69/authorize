@@ -6,3 +6,4 @@ export class HttpValidationProblemDetails{
     public instance!:string;
     public errors!:string[];
 }
+
