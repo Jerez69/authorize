@@ -1,6 +1,8 @@
 # authorize
 
-1. CORS Fehler:
+Following are my errors which I don#t come around and need help:
+
+1. CORS Error:
 
 ```
 builder.Services.AddCors(options =>
@@ -16,53 +18,57 @@ builder.Services.AddCors(options =>
 });
 ```
 
-Sobald .AllowCredentials() aktiviere, darf nicht mehr .AllowAnyOrigin() verwendet werden.
-Das umgehe ich gerade, indem ich die Zeile
+As soon as I activate .AllowCredentials(), I'm not allowed to use any more .AllowAnyOrigin().
+At the moment I found a worakaround by using
 
 ```
 .SetIsOriginAllowed(origin => true)
 ```
 
-gefunden habe.
-
-Nur mit .AllowAnyOrigin() kann ich im Moment ohne [Authorize] markierte Methoden erfolgreich aufrufen.
-Ansonsten kommt sowieso eien CORS Error message:
-Access to XMLHttpRequest at 'https://localhost:7267/api/weatherforecast/ping1' from origin 'http://localhost:4200' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
-Die Methode 'ping1' ist dabei nicht geschützt.
-
-Sprich, wenn ich versuche, nur mit 
+Only with .AllowAnyOrigin() I'm able to call without methods [Authorize] currently.
+When I try the commnered out line
 ```
 .WithOrigins("http://localhost:5216", "https://localhost:4200/", "http://localhost:4200/", "https://localhost:7267/", "https://localhost:7267/api/WeatherForecast/ping1")
 ```
-zu arbeiten, bekomme ich bei allen Methoden eien CORS Fehler-Meldung.
+I get following error:
+```
+Access to XMLHttpRequest at 'https://localhost:7267/api/weatherforecast/ping1' from origin 'http://localhost:4200' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+```
+The method 'ping1' is not protected with [Authorize].
 
-Frage: Wie aktiviere ich CORS richtig?
+That means, if I just try to work with 
+```
+.WithOrigins("http://localhost:5216", "https://localhost:4200/", "http://localhost:4200/", "https://localhost:7267/", "https://localhost:7267/api/WeatherForecast/ping1")
+```
+I get at all methids a CORS error message.
+
+Question: How can I activate CORS in the right way?
 
 ---
 
 2. Login
 
-Über SwaggerUI kann ich folgendes erfolgreich abfahren:
-- [Authorize] Methode liefert 401
-- Register und Login
-  (dabei sogar auch die email confirmation erfolgreich, idem Beispiel habe ich dei email confirmation abgeklemmt)
-- [Authorize] Methode klappt.
+Via SwaggerUI I'm able to processs following workflow:
+- [Authorize] Methode returns 401
+- Register and Login
+  (also with email confirmation sucessful, but in the example I have omitted the email confirmation)
+- [Authorize] methode called sucessfully.
 
-Das gleiche aber über meine Bespiel-Angular App:
+The same now with my example angular app:
 
-Register hat geklappt, der Account ist erfolgreich in meiner CosmosDB gespeichert,
-hier im Beispiel ist nur die InMmemoryDB konfiguriert
-und ich habe einen fixen account und fixes passwort eingestellt,
-um mir im beispiel das ständige Eingeben zu ersparen.
+Register has worked the account is successfully stored in my CosmosDB,
+here in the example is only the InMemoryDB configured
+and have provided a fix account and password
+to avoid providing permanent input.
 
-Login liefert zwei Einträge in der Network Tab:
+Login returns 2 entrioes in the Network Tab:
 - 204
 - 200
-Schaut also gar nicht so schlecht aus.
-Trotzdem die Frage: Warum 204 und 200?
+That seems form the begininng not so bad to me.
+Though die question: Why 204 and 200?
 
-Nun die geschützte Methode:
-Obwohl login scheinbar geklappt hat, kann ich trotzdem keine geschützten Methoden aufrufen:
+But now the call to the protected method:
+Although loging seems to work I can't call a protected methid from my angular app.
 
 ```
 Request URL:
@@ -75,23 +81,14 @@ Referrer Policy:
 strict-origin-when-cross-origin
 ```
 
-Also auch hier wieder die 401 error message, obwohl login scheinbar geklappt hat.
-Leider kann ich in die Login Methode nicht reindebuggen,
-da habe ich den Sourcecode nicht, zumindest hab ich ihn nicht gefunden.
+Again also here a 410.
 
-Fragen:
-Muss ich beim Login noch irgendwas extra tun?
-Ein Cookie explizit setzen oder dessen Expirydate? Und wenn ja, wie?
-Was sollte denn eigentlich bei der Login Methode zurückkommen?
-Ich bekomme zwar die 200, aber sonst nichts. Ist das ok? 
---> Wie bekomme es hin, dass die geschützten Methoden aufrufbar werden (wie im SwaggerUI)?
+Questions:
+Do I have to do something more at the login?
+To set a Cookie explicitly or the Expirydate? And if yes how?
+Should the Login methode return more?
+I just get 200, but nothing alse. Is that ok? 
+--> How is it possible to call the protected methods (like in the SwaggerUI)?
 
-Schau dir doch bitte mal das Program.cs der WebApp an,
-fällt Dir irgendwas auf, was nicht passt?
-Und/oder muss ich in der angular app noch irgendwas zusätzlich tun?
-
-
-
-
-
-
+Please have look to my Program.cs
+Is there something wrong or do I have to to do something inmy angular app?
