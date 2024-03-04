@@ -148,6 +148,25 @@ export class AppComponent {
     console.log('AppComponent.ping6 done');
   }
 
+  public setCookie() {
+    console.log('AppComponent.setCookie...');
+
+    this.webService.setCookie()
+      .subscribe({
+        next: (res) => {
+          console.log('AppComponent.setCookie returned: ' + res);
+        },
+        error: (e) => {
+          console.log('AppComponent.setCookie: Error.Status: ' + e.status);
+          console.error(e);
+          this.err = e;
+        },
+        complete: () => console.info('AppComponent.setCookie: complete')
+      });
+
+    console.log('AppComponent.setCookie done');
+  }
+
   public login() {
     console.log('AppComponent.login...');
 

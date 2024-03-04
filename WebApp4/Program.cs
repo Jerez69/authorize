@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -16,9 +17,9 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(MyAllowSpecificOrigins,
         builder => builder
-            //.WithOrigins("http://localhost:5216", "https://localhost:4200/", "http://localhost:4200/", "https://localhost:7267/", "https://localhost:7267/api/WeatherForecast/ping1")
+            .WithOrigins("http://localhost:4200")
             //.AllowAnyOrigin()
-            .SetIsOriginAllowed(origin => true) // allow any origin
+            //.SetIsOriginAllowed(origin => true) // allow any origin
             .AllowAnyHeader()
             .AllowCredentials()
             .AllowAnyMethod());
@@ -83,7 +84,8 @@ app.UseHttpsRedirection();
 app.UseCookiePolicy(
     new CookiePolicyOptions
     {
-        MinimumSameSitePolicy = SameSiteMode.None
+        MinimumSameSitePolicy = SameSiteMode.Unspecified,
+        OnAppendCookie = cookieContext => cookieContext.CookieOptions.SameSite = SameSiteMode.None,
     });
 
 app.UseAuthentication();
@@ -104,6 +106,17 @@ app.MapPost("/logout", async (
     }
     return Results.NotFound();
 }).RequireAuthorization();
+
+app.MapPost("/set-cookie", (HttpContext ctx) => 
+{
+    ctx.Response.Cookies.Append("some-cookie", "test", new CookieOptions
+    {
+        HttpOnly = false,
+        Secure = true,
+        SameSite = SameSiteMode.Lax
+    });
+    return Results.Ok();
+});
 
 app.MapControllers();
 
