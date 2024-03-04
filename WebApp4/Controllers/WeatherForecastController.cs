@@ -69,10 +69,11 @@ namespace WebApp4.Controllers
         [Authorize]
         [HttpGet]
         [Route("ping3")]
-        public async Task<IActionResult> Ping3()
+        public IActionResult Ping3()
         {
             try
             {
+                _logger.LogInformation(HttpContext.User.Identity?.Name);
                 return Ok(true);
             }
             catch (Exception ex)

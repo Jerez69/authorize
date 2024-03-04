@@ -62,7 +62,7 @@ export class WebService {
   }
 
   public ping3(): Observable<boolean> {
-    return this._http.get<boolean>(baseUrl + 'api/weatherforecast/ping3')
+    return this._http.get<boolean>(baseUrl + 'api/weatherforecast/ping3', { withCredentials: true })
       .pipe(
         tap(_ => console.log('ping3')),
         catchError(error => {
@@ -172,13 +172,36 @@ export class WebService {
       );
   }
 
+  public setCookie(): Observable<boolean> {
+    return this._http.post<boolean>(baseUrl + 'set-cookie', {}, { withCredentials: true})
+      .pipe(
+        tap(_ => console.log('setCookie')),
+        catchError(error => {
+          console.log('-----------------');
+          console.error(error);
+          console.log('-----------------');
+          console.log('UserService.setCookie: Error.Status: ' + error.status);
+          console.log('UserService.setCookie: Error.Message: ' + error.message);
+          console.log('UserService.setCookie: Error.Status: ' + error.status);
+          console.log('UserService.setCookie: Error.Url: ' + error.url);
+          console.log('UserService.setCookie: Error.StatusText: ' + error.statusText);
+          console.log('UserService.setCookie: Error.Name: ' + error.name);
+          console.log('UserService.setCookie: Error.Type: ' + error.type);
+          console.log('UserService.setCookie: Error.Ok: ' + error.ok);
+          console.log('-----------------');
+          return throwError(() => error);
+        })
+      );
+  }
+
   public login (): Observable<AccessTokenResponse> {
     let httpHeaders = new HttpHeaders({
       'Content-Type' : 'application/json',
       'Cache-Control': 'no-cache'
     });    
     let options = {
-      headers: httpHeaders
+      headers: httpHeaders,
+      withCredentials: true
     };
     var loginRequest = new LoginRequest();
     loginRequest.email = "marcus.wuebbe@gmx.de";
